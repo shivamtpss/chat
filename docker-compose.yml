@@ -1,0 +1,22 @@
+# Postgres for Stage 00. Uses port 5433 on the host to avoid clashing
+# with any local Postgres already on 5432.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: stage00-chat-db
+    environment:
+      POSTGRES_USER: chat
+      POSTGRES_PASSWORD: chat
+      POSTGRES_DB: chat
+    ports:
+      - "5433:5432"
+    volumes:
+      - stage00_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chat -d chat"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  stage00_pgdata:
