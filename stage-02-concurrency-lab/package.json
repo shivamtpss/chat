@@ -1,0 +1,31 @@
+{
+  "name": "stage-02-concurrency-lab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Stage 02: a hands-on concurrency lab. Feel pool exhaustion, a slow query draining the pool, event-loop blocking vs async, and throughput under load (the 1k-10k user jump).",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down",
+    "db:reset": "docker compose down -v && docker compose up -d db",
+    "db:migrate": "node --no-warnings --loader ts-node/esm src/db/migrate.ts",
+    "seed": "node --no-warnings --loader ts-node/esm src/seed.ts",
+    "lab": "node --no-warnings --loader ts-node/esm src/lab.ts",
+    "lab:all": "node --no-warnings --loader ts-node/esm src/lab.ts all"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "pg": "^8.12.0",
+    "ulid": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/pg": "^8.11.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  }
+}

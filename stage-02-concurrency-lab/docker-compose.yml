@@ -1,0 +1,24 @@
+# Postgres for the Stage 02 concurrency lab.
+# Host port 5435 keeps it separate from Stage 00 (5433) and Stage 01 (5434).
+# max_connections is set low-ish so pool exhaustion and DB limits are visible.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: stage02-lab-db
+    command: ["postgres", "-c", "max_connections=50"]
+    environment:
+      POSTGRES_USER: lab
+      POSTGRES_PASSWORD: lab
+      POSTGRES_DB: lab
+    ports:
+      - "5435:5432"
+    volumes:
+      - stage02_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lab -d lab"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  stage02_pgdata:
