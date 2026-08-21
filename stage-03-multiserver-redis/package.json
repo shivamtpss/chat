@@ -1,0 +1,37 @@
+{
+  "name": "stage-03-multiserver-redis",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Stage 03: multiple chat gateway servers + Redis. Solves 'Alice on server A, Bob on server B' with a Redis routing directory and pub/sub delivery.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down",
+    "infra:reset": "docker compose down -v && docker compose up -d",
+    "db:migrate": "node --no-warnings --loader ts-node/esm src/db/migrate.ts",
+    "start": "node --no-warnings --loader ts-node/esm src/index.ts",
+    "start:a": "SERVER_ID=A PORT=3001 node --no-warnings --loader ts-node/esm src/index.ts",
+    "start:b": "SERVER_ID=B PORT=3002 node --no-warnings --loader ts-node/esm src/index.ts",
+    "smoke": "node --no-warnings --loader ts-node/esm scripts/smoke.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ioredis": "^5.4.1",
+    "pg": "^8.12.0",
+    "pino": "^9.3.2",
+    "ulid": "^2.3.0",
+    "ws": "^8.18.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/pg": "^8.11.6",
+    "@types/ws": "^8.5.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  }
+}

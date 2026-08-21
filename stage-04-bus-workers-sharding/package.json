@@ -1,0 +1,41 @@
+{
+  "name": "stage-04-bus-workers-sharding",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Stage 04: durable message bus (Redis Streams) + background workers + partitioned (sharded) message store. Fixes Stage 03's fire-and-forget delivery with replayable, decoupled processing.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down",
+    "infra:reset": "docker compose down -v && docker compose up -d",
+    "db:migrate": "node --no-warnings --loader ts-node/esm src/db/migrate.ts",
+    "gateway": "node --no-warnings --loader ts-node/esm src/gateway/index.ts",
+    "gateway:a": "SERVER_ID=A PORT=3001 node --no-warnings --loader ts-node/esm src/gateway/index.ts",
+    "worker": "node --no-warnings --loader ts-node/esm src/worker/index.ts",
+    "worker:1": "WORKER_ID=w1 node --no-warnings --loader ts-node/esm src/worker/index.ts",
+    "worker:2": "WORKER_ID=w2 node --no-warnings --loader ts-node/esm src/worker/index.ts",
+    "demo:replay": "node --no-warnings --loader ts-node/esm scripts/demo-replay.ts",
+    "demo:sharding": "node --no-warnings --loader ts-node/esm scripts/demo-sharding.ts",
+    "smoke": "node --no-warnings --loader ts-node/esm scripts/smoke.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ioredis": "^5.4.1",
+    "pg": "^8.12.0",
+    "pino": "^9.3.2",
+    "ulid": "^2.3.0",
+    "ws": "^8.18.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/pg": "^8.11.6",
+    "@types/ws": "^8.5.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  }
+}

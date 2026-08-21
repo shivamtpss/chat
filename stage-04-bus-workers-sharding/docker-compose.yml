@@ -1,0 +1,39 @@
+# Stage 04 infra: Postgres + Redis (Redis also serves as the durable bus via Streams).
+# Ports: Postgres 5437, Redis 6381 (Stage 00-03 used 5433-5436 / 6380; host uses 6379).
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: stage04-db
+    environment:
+      POSTGRES_USER: chat
+      POSTGRES_PASSWORD: chat
+      POSTGRES_DB: chat
+    ports:
+      - "5437:5432"
+    volumes:
+      - stage04_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chat -d chat"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: stage04-redis
+    # appendonly on: the bus (Redis Stream) survives a Redis restart. This is
+    # what makes the bus DURABLE, the whole point of Stage 04.
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6381:6379"
+    volumes:
+      - stage04_redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  stage04_pgdata:
+  stage04_redisdata:
